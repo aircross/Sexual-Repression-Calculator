@@ -1,4 +1,4 @@
-FROM alpine3.21
+FROM 22
 WORKDIR /app
 COPY package*.json ./
 RUN npm install --production
