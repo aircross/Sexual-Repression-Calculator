@@ -17,7 +17,7 @@ RUN npm install
 # 执行生产构建
 RUN npm run build
 
-ls /app
+RUN ls /app
 
 # --- 第二阶段: 生产环境镜像 ---
 # 使用轻量的 Node.js Alpine 镜像作为基础
