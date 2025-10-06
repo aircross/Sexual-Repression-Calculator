@@ -8,14 +8,16 @@ WORKDIR /app
 # 复制 package.json 和 package-lock.json 以利用缓存
 COPY package*.json ./
 
-# 安装依赖
-RUN npm install
-
 # 复制项目所有文件
 COPY . .
 
+# 安装依赖
+RUN npm install
+
 # 执行生产构建
 RUN npm run build
+
+ls /app
 
 # --- 第二阶段: 生产环境镜像 ---
 # 使用轻量的 Node.js Alpine 镜像作为基础
