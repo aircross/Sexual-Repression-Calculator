@@ -27,9 +27,7 @@ FROM node:22-alpine
 WORKDIR /app
 
 # 复制第一阶段构建好的生产环境文件
-COPY --from=builder /app/build ./build
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app /app
 
 # 暴露应用端口
 EXPOSE 3000
