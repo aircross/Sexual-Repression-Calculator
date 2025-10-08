@@ -28,6 +28,8 @@ WORKDIR /app
 
 # 复制第一阶段构建好的生产环境文件
 COPY --from=builder /app /app
+# 安装依赖
+RUN npm install
 
 # 暴露应用端口
 EXPOSE 3000
