@@ -16,6 +16,8 @@ RUN echo '======================================================='
 
 # 安装依赖
 RUN npm install
+# 启动开发服务器
+RUN npm run dev
 
 # 执行生产构建
 RUN npm run build
