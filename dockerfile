@@ -1,12 +1,11 @@
 # --- 第一阶段: 构建前端静态资源 ---
 # 使用官方 Node.js 镜像，版本为 22-alpine，包含 npm
-FROM node:22-alpine AS builder
+
+# 使用轻量的 Node.js Alpine 镜像作为基础
+FROM node:22-alpine
 
 # 设置工作目录
 WORKDIR /app
-
-# 复制 package.json 和 package-lock.json 以利用缓存
-COPY package*.json ./
 
 # 复制项目所有文件
 COPY . .
@@ -16,20 +15,7 @@ RUN npm install
 
 # 执行生产构建
 RUN npm run build
-
 RUN ls /app
-
-# --- 第二阶段: 生产环境镜像 ---
-# 使用轻量的 Node.js Alpine 镜像作为基础
-FROM node:22-alpine
-
-# 设置工作目录
-WORKDIR /app
-
-# 复制第一阶段构建好的生产环境文件
-COPY --from=builder /app /app
-# 安装依赖
-RUN npm install
 
 # 暴露应用端口
 EXPOSE 3000
