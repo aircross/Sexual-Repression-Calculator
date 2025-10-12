@@ -3,28 +3,28 @@
  * 负责管理整个评估流程，包括知情同意、人口学信息、量表问卷等
  */
 
-import React, { useState, useEffect, useRef } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
+import React, {useEffect, useRef, useState} from 'react';
+import {useNavigate, useSearchParams} from 'react-router-dom';
+import {Card} from '@/components/ui/card';
+import {Button} from '@/components/ui/button';
+import {Progress} from '@/components/ui/progress';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { AlertTriangle, CheckCircle, ArrowLeft, Home, Brain } from 'lucide-react';
-import { AssessmentSession, Demographics, Response } from '@/types';
-import { calculateAssessmentResults } from '@/lib/calculator';
-import { saveAssessmentSession } from '@/lib/storage';
-import { ConsentForm } from '@/components/assessment/consent-form';
-import { DemographicsForm } from '@/components/assessment/demographics-form';
-import { QuestionnaireSection } from '@/components/assessment/questionnaire-section';
+import {AlertTriangle, ArrowLeft, Brain, CheckCircle, Home} from 'lucide-react';
+import {AssessmentSession, Demographics, Response} from '@/types';
+import {calculateAssessmentResults} from '@/lib/calculator';
+import {saveAssessmentSession} from '@/lib/storage';
+import {ConsentForm} from '@/components/assessment/consent-form';
+import {DemographicsForm} from '@/components/assessment/demographics-form';
+import {QuestionnaireSection} from '@/components/assessment/questionnaire-section';
 
 type AssessmentStep = 'consent' | 'demographics' | 'questionnaire' | 'processing' | 'completed';
 
@@ -95,7 +95,7 @@ export default function Assessment() {
     }
   }, [assessmentType, hasCheckedProgress]);
 
-  const handleContinueProgress = () => {
+const handleContinueProgress = () => {
     if (!pendingProgress) {
       closingProgressDialogRef.current = false;
       setShowProgressDialog(false);
@@ -138,7 +138,58 @@ export default function Assessment() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
-  const handleDiscardProgress = () => {
+
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+  }, [currentStep]);
+
+  useEffect(() => {
+    if (hasCheckedProgress) {
+      return;
+    }
+
+    const savedProgress = localStorage.getItem('sri_assessment_progress');
+    if (!savedProgress) {
+      setHasCheckedProgress(true);
+      return;
+    }
+
+    try {
+      const data = JSON.parse(savedProgress);
+      if (data.type !== assessmentType) {
+        setHasCheckedProgress(true);
+        return;
+      }
+
+      const savedDemographics = data.demographics as Demographics | undefined;
+      type RawResponse = { questionId: string; value: number; timestamp: string };
+      const rawResponses: RawResponse[] = Array.isArray(data.responses) ? data.responses : [];
+      const restoredResponses: Response[] = rawResponses.map((item) => ({
+        questionId: item.questionId,
+        value: item.value,
+        timestamp: new Date(item.timestamp),
+      }));
+
+      if (!savedDemographics && restoredResponses.length === 0) {
+        setHasCheckedProgress(true);
+        return;
+      }
+
+      setPendingProgress({
+        demographics: savedDemographics,
+        responses: restoredResponses,
+      });
+      setShowProgressDialog(true);
+      setHasCheckedProgress(true);
+    } catch (error) {
+      console.error('检查保存的进度时出错:', error);
+      setHasCheckedProgress(true);
+    }
+  }, [assessmentType, hasCheckedProgress]);
+
+
+const handleDiscardProgress = () => {
     closingProgressDialogRef.current = true;
     localStorage.removeItem('sri_assessment_progress');
     setPendingProgress(null);
@@ -162,7 +213,7 @@ export default function Assessment() {
     }
   };
 
-  const handleProgressDialogOpenChange = (open: boolean) => {
+const handleProgressDialogOpenChange = (open: boolean) => {
     if (!open) {
       if (closingProgressDialogRef.current) {
         closingProgressDialogRef.current = false;
