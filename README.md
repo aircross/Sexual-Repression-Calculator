@@ -96,7 +96,7 @@ npm start
 ### 使用 Docker 运行
 
 ```bash
-docker run -p 8000:8000 aircross/src
+docker run -p 8800:8800 aircross/src
 ```
 
 ### 访问应用

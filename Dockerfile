@@ -13,6 +13,6 @@ WORKDIR /app
 
 COPY --from=builder /app/dist .
 
-EXPOSE 8000
+EXPOSE 8800
 
 CMD ["run", "--allow-net", "--allow-read", "server.cjs"]
