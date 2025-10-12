@@ -51,8 +51,8 @@ sudo service docker start|restart|stop
 2. docker compose安装，克隆仓库：
 
    ```sh
-   git clone https://github.com/aircross/src.git
-   cd 3x-ui
+   git clone https://github.com/aircross/Sexual-Repression-Calculator.git
+   cd Sexual-Repression-Calculator
    ```
 
 运行服务：
