@@ -65,7 +65,9 @@ sudo service docker start|restart|stop
 3. docker一键安装：
 
    ```sh
-   docker run -itd \
+   # 8800为对外端口
+   docker run -d \
+      -p 8800:8000 \
       --network=host \
       --restart=unless-stopped \
       --name src \
@@ -96,7 +98,8 @@ npm start
 ### 使用 Docker 运行
 
 ```bash
-docker run -p 8800:8800 aircross/src
+docker run -d -p 8800:8000 --restart=unless-stopped --name src aircross/src:latest
+
 ```
 
 ### 访问应用
