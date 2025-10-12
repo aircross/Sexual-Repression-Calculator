@@ -2,7 +2,7 @@
 # 使用官方 Node.js 镜像，版本为 22-alpine，包含 npm
 
 # 使用轻量的 Node.js Alpine 镜像作为基础
-FROM node:22-alpine
+FROM node:22-alpine AS builder
 
 # 设置工作目录
 WORKDIR /app
@@ -21,14 +21,14 @@ RUN npm install
 
 # 执行生产构建
 RUN npm run build
-RUN echo '======================================================='
-RUN ls /app
-RUN echo '======================================================='
+FROM denoland/deno:alpine AS runner
 
-# 暴露应用端口
-EXPOSE 3000
+WORKDIR /app
 
-# 启动生产服务器
-CMD ["npm", "start"]
+COPY --from=builder /app/dist .
+
+EXPOSE 8000
+
+CMD ["run", "--allow-net", "--allow-read", "server.cjs"]
 
 # 如果你的项目需要更多的配置（例如环境变量），可以在此添加。
