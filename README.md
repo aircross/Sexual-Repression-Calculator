@@ -96,7 +96,7 @@ npm start
 ### 使用 Docker 运行
 
 ```bash
-docker run -p 8000:8000 appe233/sexual-repression-calculator
+docker run -p 8000:8000 aircross/src
 ```
 
 ### 访问应用
